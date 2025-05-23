@@ -1,0 +1,55 @@
+% !TeX spellcheck = en_EN-English
+\documentclass[a4paper]{article}
+\usepackage[slovak]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm,amssymb}
+\usepackage{mathrsfs}
+\usepackage[small,bf]{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage[a4paper, total={7in, 10.2in}]{geometry}
+
+
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+\newenvironment{modenumerate}
+{\enumerate\setupmodenumerate}
+{\endenumerate}
+
+%\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\renewcommand{\thesubsection}{\alph{subsection})}
+
+
+\begin{document} 
+	
+	\pagenumbering{arabic}
+	\pagestyle{plain}
+	...
+	
+	Then they did two classifications. In first classification they were classifying promoters based on arrangements of DNA binding sites within them. They found four types arrangement we can see their visualization on figure "3". 
+	
+	The first arrangement is the most straightforward, featuring a single binding site. For instance, the motif for the Gcn4 regulator was identified independently within the binding sites of various genes. 
+	
+	The second arrangement consist multiple binding sequences for single regulator. They observed that certain regulators, such as Dig1 and Mbp1, exhibit statistically significant preferences for this type of arrangement. In their statistical analysis, the researchers tested the null hypothesis, assuming "The distribution for each regulator is the same as the average distribution for all regulators." Here, the term "distribution" refers to the ratio between the number of repetitive and non-repetitive arrangements. The obtained P-value for these two regulators was approximately $10^{-8}$ (Supplementary table 5), leading to the rejection of the null hypothesis. 
+	
+	The third class consist of most "chaotic" arrangements, this class contains promoters with binding sites for different regulators. This suggest combinatorial regulation of gene. The authors expect that, in many cases, various regulators can be employed to generate different responses under varying growth conditions.
+	
+	The fourth category is characterized by 'co-occurring' motifs. Promoters in this category harbor binding sites for pairs of specific regulators that appear together more frequently than would be expected by chance. They found 94 distinct pairs of regulators for which statistical testing with null hypothesis "Binding for those two regulators is independent" resulted in P-value smaller than 0.005 and thus rejection of null hypothesis (Supplementary table 6). 
+	\\
+	\\
+	The second categorization they performed involves classifying regulators based on how their behavior changes in various environments.They split all regulators into four categories. 
+	
+	The first category is called 'Condition-invariant'. Regulator in this category bind the same set of promoters in two different environments. However, this does not necessarily imply that regulated genes are activated regardless of the environment. For instance, one of the extensively studied regulators in this category, Leu3, is essential for the activation of the genes it regulates. However, its sufficiency is not assured, as it requires the association of a leucine metabolic precursor to transform Leu3 from a negative to a positive regulator. Several additional regulators in this category are recognized to exhibit similar characteristics, leading the authors to reasonably propose that activation or repression functions of some less-studied regulators in this category have requirements in addition to DNA binding. 
+	
+	Next category is called 'Condition-enabled'. These regulators do not exhibit binding in one environment but display considerable binding activity in another. 
+	
+\end{document}

@@ -1,0 +1,33 @@
+#
+# YOU SHOULD NOT RUN THIS FILE!
+# Just paste relevant parts to the tutorial notebook.
+#
+
+# Possible parameter values (do not copy this anywhere)
+
+n_layers = #1,2,3,4,5
+hidden_size = #from 10 to 1000
+dropout_rate = #float from 0.0 to 1.0
+epochs = #from 1 to 100
+
+# Network definition and fitting
+# You can copy this to tutorial notebook (probably wrap it in some function) and add grid and random search over it.
+
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+from keras.optimizers import Adam
+
+
+mlp = Sequential()
+mlp.add(Dense(hidden_size, activation='tanh', input_dim=X_train.shape[1]))
+mlp.add(Dropout(dropout_rate))
+for i in range(n_layers - 1):
+    mlp.add(Dense(hidden_size, activation='tanh'))
+    mlp.add(Dropout(dropout_rate))
+mlp.add(Dense(10, activation='softmax'))
+
+mlp.compile(loss='categorical_crossentropy', optimizer=Adam(0.04),  metrics=['accuracy'])
+
+history = mlp.fit(X_train, to_categorical(y_train), epochs=n_epochs, validation_split=0.1, verbose=True)
+
+# here you should check the validation error

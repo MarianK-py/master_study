@@ -1,0 +1,33 @@
+Autor: Marian Kravec
+
+Firstly we are trying to compute best value alpha
+for that we would use pretty simple method
+we would have starting alpha, step and starting error
+(i decided to have starting error, it should not really)
+now we would change alpha by step and compute new error
+if error decrease then new alpha is alpha+step
+if error increase then alpha stay stay and we multiply step by -0.9
+0.9 to decrease step size and (-) to take a look in other direction
+this method end when step is smaller than 0.000001 in absolute value
+this method should get close to optimal value for 1D convex function
+(theoretically we can prove that maximal distance to optimum is less than  0.000001)
+we expect that our parameter alpha behave this way.
+
+After we get our array of coefficients of optimal model 
+we need to determine threshold to filter only relevant attributes.
+I decided to similar logic to the one we used to determine alpha
+but with few differences.
+We start by saying taking k attributes with biggest coefficient (in code "k" is "thresh" but 
+here is looked strange when I wrote "thresh" biggest, but I like how it look in the code)
+and compute cross validation error of standard linear regression multiplied 
+by k^0.8 to give it some kind of penalty for a lot of attributes 
+then we ask whether this error decrease if we add attribute with biggest coefficient out of
+all unused ones. If it decrease for try to add another, if it increase if try to do opposite
+to remove attribute with smallest coefficient out of used ones. 
+We stop when either adding and removing attribute increase error.
+This method is far from perfect and really dependent on initial number of attributes
+but results looks pretty good in my opinion.
+
+In the end we have information of number of attributes which we consider relevant.
+For input.txt we get these 9: 5, 6, 7, 42, 43, 74, 100, 101, 102
+  

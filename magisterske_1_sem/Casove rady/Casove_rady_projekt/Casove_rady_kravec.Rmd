@@ -1,0 +1,352 @@
+---
+title: "Projekt časové rady"
+author: "Marian Kravec"
+date: "2023-11-26"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(astsa)
+library(urca)
+library(areaplot)
+library(rstudioapi)
+
+# Kratke funkcie na lahsie vykreslovnanie
+fn_plot_train_and_pred <- function(train, predict, model, reality, xmin, xmax) {
+  plot(rownames(train), train$interestRate,  col="black", xlim = c(xmin, xmax), ylim = c(- 4, 6), type = "l", xlab = "Čas", ylab = "Úroková miera")
+  #lines(as.integer(rownames(train)), data_train$interestRate, col="black")
+  
+  confplot(as.integer(rownames(predict)), model$pred-2*model$se, model$pred+2*model$se, add=TRUE)
+  confplot(as.integer(rownames(predict)), model$pred-model$se, model$pred+model$se, col="darkgray", add=TRUE)
+  if (reality){
+    points(rownames(predict), predict$interestRate,  col="green")
+    lines(rownames(predict), predict$interestRate, col="green")
+  }
+  points(rownames(predict), model$pred, col="red")
+  lines(rownames(predict), model$pred, col="red")
+  
+}
+fn_plot_train_and_pred_model_comp <- function(train, predict, model1, model2, reality, xmin, xmax) {
+  plot(rownames(train), train$interestRate,  col="black", xlim = c(xmin, xmax), ylim = c(- 4, 6), type = "l", xlab = "Čas", ylab = "Úroková miera")
+  
+  if (reality){
+    points(rownames(predict), predict$interestRate,  col="green")
+    lines(rownames(predict), predict$interestRate, col="green")
+  }
+  points(rownames(predict), model1$pred, col="red")
+  lines(rownames(predict), model1$pred, col="red")
+  points(rownames(predict), model2$pred, col="blue")
+  lines(rownames(predict), model2$pred, col="blue")
+  
+}
+fn_plot_pred <- function(predict, model) {
+  confplot(rownames(predict), model$pred-2*model$se, model$pred+2*model$se, ylim = c(- 4, 4), xlab = "Čas", ylab = "Úroková miera")
+  confplot(rownames(predict), model$pred-model$se, model$pred+model$se, col="darkgray", add=TRUE)
+  
+  points(rownames(predict), predict$interestRate,  col="green")
+  lines(rownames(predict), predict$interestRate, col="green")
+  points(rownames(predict), model$pred, col="red")
+  lines(rownames(predict), model$pred, col="red")
+  
+}
+fn_plot_pred_model_comp <- function(predict, model1, model2, maxy, miny) {
+  plot(rownames(predict), predict$interestRate,  col="green", ylim = c(maxy, miny), xlab = "Čas", ylab = "Úroková miera")
+  lines(rownames(predict), predict$interestRate, col="green")
+  points(rownames(predict), model1$pred, col="red")
+  lines(rownames(predict), model1$pred, col="red")
+  points(rownames(predict), model2$pred, col="blue")
+  lines(rownames(predict), model2$pred, col="blue")
+  
+}
+
+
+# Ako prve si nastavime cestu k nasim datam a nacitame ich
+scriptPath <- getSourceEditorContext()$path
+folderPath <- gsub("/Casove_rady_kravec\\.Rmd","",scriptPath)
+setwd(folderPath)
+#setwd("C:/Users/majko/Desktop/Casove_rady_projekt")
+data <- read.csv("ECB Data Portal_20231112202535.csv",
+                 header=TRUE) 
+# Teraz si tie data pripravime (pridame stlpec roku)
+data <- data[c(2,3)]
+colnames(data) <- c("yearMonth", "interestRate")
+data["year"] <- as.integer(substring(data$yearMonth, 1,4 ))
+# Tieto data si to
+data_train <- data[data$year %in% 2001:2020,]
+rownames(data_train) <- as.integer(rownames(data_train))-97
+data_predict <- data[data$year > 2020,]
+rownames(data_predict) <- as.integer(rownames(data_predict))-97
+
+```
+
+## Dáta
+
+Na našu analýzu použijeme dáta mesačné hodnoty úrokových mier vo Švédsku (mena je Švédska koruna) medzi rokmi 2001 a 2020. Budeme sa snažiť modelovať hodnoty na ďalších 33 mesiacov (od januára 2021 do septermbra 2023) pričom tento odhad porovnáme aj so skutočnými hodnotami v nadom období.
+
+Naše dáta vyzerájú následovne
+
+```{r data, echo=FALSE}
+head(data_train)
+```
+Ak si tieto dáta vykreslíme, vyzerajú následovne:
+
+```{r data_plot, echo=FALSE}
+plot(as.integer(rownames(data_train)), data_train$interestRate, xlab = "Čas", ylab = "Úroková miera", type="l")
+```
+
+V týchto dítach vidíme na prvý pohľad trend to znamená, že naše dáta nie sú stacionárne. Preto budeme ďalej pravocať s prvými diferenciami našich. Tieto diferencie si tiež vykreslíme:
+
+```{r data_diff_plot, echo=FALSE}
+l = length(data_train[,1])
+plot(as.integer(rownames(data_train))[1:(l-1)],diff(data_train$interestRate), xlab = "Čas", ylab = "Diferencie úrokovej miery", type="l")
+```
+
+V diferenciách nie je vidieť žiaden trend preto tieto dáta už nebudeme diferencovať kvôli trendu.
+
+## Jednotkový koreň
+
+Aj napriek tomu, že dáta nebudeme diferencovať kvôli trendu musíme ešte otestovať či nie je nutné dáta diferencovať z dôvodu prítomnosti jednotkové koreňa. Na tento účel použijeme ADF test v tomto prípade použijeme type="drift" keďže tvrdíme, že naše pôvodné dáta majú lineárny trend a preto naše diferencie budú mať konštantny člen.
+
+```{r ADF}
+urTest = ur.df(diff(data_train$interestRate), type = "drift", lags = 12, selectlags = "BIC")
+summary(urTest)
+```
+
+Našou nulovou hypotézou v tomto teste bolo, že naše dáta majú jednotkový koreň. Keďže výsledná hodnota štatistiky pre naše dáta je -9.427 čo je výrazne menej ako 5% kritická hodnota -2.88 môžeme tvrdiť, že nulovú hypotézu zamietame, naše dáta neobsahujú jednotkový koreň a preto ich nemusíme druhýkrát diferencovať. Naše diferencie sú stacionárne.
+
+## Testovanie bieleho šumu
+
+Ako ďalšie budeme testovať či naše diferencie sú iba biely šum ale nie respektíve či sú naše diferencie vzájomne nezávislé alebo nie. Ak by boli nezávislé nemá pre nás zmysel vytvárať pre nich ARIMA model. Na toto testovanie použijeme Ljung-Boxov test, tento test má nulovú hypotézu, že dáta sú nezávislé. Keď tento test spravíme pre prvých 12 lagov dostaneme takéto p-hodnoty:
+
+```{r Ljung_Box_data}
+lb <- mapply(function(x) Box.test(diff(data_train$interestRate), lag = x, type = "Ljung-Box")$p.value , 1:12)
+
+plot(lb, ylim=c(0,1), xlab = "Lag", ylab = "P-hodnota")
+lines(1:12,rep(0.05, 12), lty='dashed', col = "blue")
+```
+
+Všetky p-hodnoty sú hlboko pod 5% hranicou z čoho vyplíva, že pre všetky zamietame nulovú hypotézu a tvrdíme, že diferencie našich dáta nie sú nezávislé a preto dáva zmysel uvažovať o ich modelovaní pomocou ARIMA modelou.
+
+Ďalej sa pozrime na ACF a PACF našich dát:
+
+```{r ACF2, echo=FALSE}
+acf2(diff(data_train$interestRate))
+```
+
+Na ACF grafe vidíme, že jediná výrazne signifikantná hodnota je pri hodnote lag=1, z čoho vyplíva, že hodnota diferencie má najvačšiu autokoreláciu s predchádzajúcou hodnotou diferencie ostatné hodnoty autokorelácii sa nezdajú byť signifikantné (hodnota pre lag=5 je hraničná) čo by mohlo indikovať MA(1) proces. (Zároveň fakt, že existuje signifikantná autokorelácia pre nás znamená, že má zmysel proces modelovať pomocou ARIMA modelu)
+
+NA PACF grafe vidíme veľmi podobný priebeh, takisto je signifikantná iba prvá parciálne autokorelácia, čo v tomto prípade indikuje, že AR(1) proces by mohol byť vhodný na modelovanie tohto procesu.
+
+### ARIMA modely
+
+Na základe informácii získaných z predchádzajúcich častí by sme mohli predpokladať, že najvhodnejší by mohol byť niektorý z následujúcich modelov: AR(1)(ARIMA(1,1,0)), MA(1)(ARIMA(0,1,1)) alebo ARIMA(1,1,1) 
+
+Avšak aby sme mali istotu vyskúšame všetky modely s AR členmi 0, 1, 2, 3, MA člemni 0, 1, 2, 3 a ich kombinácie (všetky modely budeme samozrejme vytvárať pre diferencie našich dát).
+
+ARIMA(0, 1, 0) preskočíme, keďže už teraz vieme povedať, že tento model nebudé dobrý keďže výsledky Ljung-Boxoveho testu sú v tomto prípade totožné s výsledkami Ljung-Boxoveho testu pre diferenceie (keďže modelujeme iba konštantov a reziduá sú tým pádom v podstate totožné s diferenciami) o ktorom vieme, že zamieta nulovú hypotézu čo je nežiadúce pre model
+
+#### AR modely
+
+Najprv sa pozrime iba na rýdzo AR modely:
+
+```{r AR1, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 1,1,0, no.constant = FALSE)
+```
+```{r AR1_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+x$ttable
+```
+
+Vidíme, že model AR(1) spĺňa požadované podmienky keďže z ACF vidíme, že reziduá nemá vzájomnú autokoreláciu a z Ljung-Boxove testu vidíme, že reziduá môžeme považovať za biely šum (ani jedna hodnota nie je pod 5%). Teraz sa ešte pozrime na koeficient pri AR člene, vidíme, že je v absolútnej hodnote menší ako 1 čo je v prípade AR(1) procesu dostatočná informácia na to aby sme mohli povedať, že proces je stacionárny. Tento model budeme považovať za dobrý (a zatiaľ najlepší) a zapamätáme si jeho hodnotu BIC aby sme ho mohli porovnať s ďalšími modelmi. 
+
+```{r AR2, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 2,1,0, no.constant = FALSE)
+```
+```{r AR2_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+```{r AR3, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 3,1,0, no.constant = FALSE)
+```
+```{r AR3_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+
+Pri AR(2) a AR(3) procesoch vidíme, že majú takisto rezduá bez autokorelácii a môžeme ich považovať za biely šum ale vidíme, že tieto modely majú väčšiu hodnotu BIC a preto o nich môžeme povedať, že ide o horšie modely ako AR(1).
+
+#### MA modely
+
+Podobne ako sme analyzovali AR modely sa pozrieme aj na MA:
+
+```{r MA1, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 0,1,1, no.constant = FALSE)
+```
+```{r MA1_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+x$ttable
+```
+
+Náš MA(1) model taktiž spĺňa požadované podmienky keďže z ACF vidíme, že reziduá nemá vzájomnú autokoreláciu a z Ljung-Boxove testu vidíme, že reziduá môžeme považovať za biely šum. Ak sa ešte pozrime na koeficient pri MA člene, vidíme, že je v absolútnej hodnote menší ako 1 čo je v prípade MA(1) procesu dostatočná informácia na to aby sme mohli povedať, že proces je invertovateľný. Preto aj tento model budeme považovať za dobrý a keďže hodnota BIC je ešte o niečo nižšia ako v prípade AR(1) môžeme priebežne považovať tento model za najlepší. 
+
+```{r MA2, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 0,1,2, no.constant = FALSE)
+```
+```{r MA2_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+```{r MA3, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 0,1,3, no.constant = FALSE)
+```
+```{r MA3_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+
+Pri MA(2) a MA(3) procesoch vidíme, že majú takisto rezduá bez autokorelácii a môžeme ich považovať za biely šum ale vidíme, že tieto modely majú väčšiu hodnotu BIC a preto o nich môžeme povedať, že ide o horšie modely ako MA(1).
+
+#### ARIMA modely
+
+Nakoniec sa ešte pozrime, či by nebolo vhodnejšie naše diferencie modelovať ARIMA procesom, čiže procesom s nenulovým AR aj MA členom:
+
+```{r ARIMA11, echo=FALSE, results='hide', fig.keep='all'}
+y <- sarima(data_train$interestRate, 1,1,1, no.constant = FALSE)
+```
+```{r ARIMA11_BIC, echo=FALSE}
+paste("BIC:", as.character(y$BIC))
+```
+```{r ARIMA12, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 1,1,2, no.constant = FALSE)
+```
+```{r ARIMA12_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+```{r ARIMA13, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 1,1,3, no.constant = FALSE)
+```
+```{r ARIMA13_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+```{r ARIMA21, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 2,1,1, no.constant = FALSE)
+```
+```{r ARIMA21_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+```{r ARIMA22, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 2,1,2, no.constant = FALSE)
+```
+```{r ARIMA22_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+```{r ARIMA23, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 2,1,3, no.constant = FALSE)
+```
+```{r ARIMA23_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+```{r ARIMA31, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 3,1,1, no.constant = FALSE)
+```
+```{r ARIMA31_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+```{r ARIMA32, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 3,1,2, no.constant = FALSE)
+```
+```{r ARIMA32_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+```{r ARIMA33, echo=FALSE, results='hide', fig.keep='all'}
+x <- sarima(data_train$interestRate, 3,1,3, no.constant = FALSE)
+```
+```{r ARIMA33_BIC, echo=FALSE}
+paste("BIC:", as.character(x$BIC))
+```
+
+Keď sa pozrieme na výsledky týchto modelov vidíme, že všetky majú reziduá bez autokorelácie (aj keď ARIMA(3,1,1) má veľmi hraničnú hodnotu pre lag=3). Ak sa pozrieme na výsledky Ljung-Boxoveho testu hneď niekoľko modelov vykazuje problém, ide o modely ARIMA(1,1,3)(veľmi hraničné), ARIMA(2,1,2), ARIMA(2,1,3), ARIMA(3,1,1) a ARIMA(3,1,2)(veľmi hraničné) ktoré vykazujú pre lag=5 respektíve lag=6 p-hodnotu menšiu ako 5% čo by indikovalo, že nejde o biely šum a preto tieto modely označíme ako zlé.
+
+Ostali nám tým pádom iba modely ARIMA(1,1,1), ARIMA(1,1,2), ARIMA(2,1,1) a ARIMA(3,1,3) z týchto modelov je najlepší ARIMA(1,1,1) (z hľadiska BIC).
+
+ARIMA(1,1,1) je dokonca lepší ako AR(2)(veľmi tesne), AR(3), MA(2)(veľmi tesne) a MA(3). Avšak je stále horší ako AR(1) a MA(1) čo z neho robí náš tretí najlepší model ak si pre tento model vypíšeme jeho koeficienty dostaneme:
+
+```{r ARIMA11_koef, echo=FALSE}
+y$ttable
+```
+
+Vidíme, že aj AR koeficient aj MA koeficient je v absolútnej hodnote menší ako 1 takže tento proces je stacionárny aj invertovateľný.
+
+#### Záver modelov
+
+Vidíme, že tak ako sme predpokladali podľa ACF a PACF naše najlepšie modely boli AR(1), MA(1) a ARIMA(1,1,1) pričom z týchto vyšiel ako úplne najlepši MA(1) model preto na predikcie použijeme práve tento model.
+
+Na úplný záver si ešte vypíšme p-hodnoty nášho najlepšieho modelu (MA(1)) pre lag=2(minimálny možný keďže náš model berie jeden stupeň voľnosti), lag=12(rok) a lag=24(2 roky):
+
+```{r MA1_, include=FALSE}
+x <- sarima(data_train$interestRate, 0,1,1, no.constant = FALSE)
+```
+```{r MA1_BIC_, echo=FALSE}
+paste("lag=2 p-hodnota:", as.character(Box.test(resid(x$fit), lag=2, type = "Ljung-Box")$p.value), "štatistika:", as.character(Box.test(resid(x$fit), lag=2, type = "Ljung-Box")$statistic))
+paste("lag=12 p-hodnota:", as.character(Box.test(resid(x$fit), lag=12, type = "Ljung-Box")$p.value), "štatistika:", as.character(Box.test(resid(x$fit), lag=12, type = "Ljung-Box")$statistic))
+paste("lag=24 p-hodnota:", as.character(Box.test(resid(x$fit), lag=24, type = "Ljung-Box")$p.value), "štatistika:", as.character(Box.test(resid(x$fit), lag=24, type = "Ljung-Box")$statistic))
+```
+
+Ako sme videli už predtým tieto p-hodnoty sú vysoké (blízka 1 dokonca) čo znamená, že reziduá môžeme považovať za biely šum.
+
+## Predikcie
+
+Teraz sa pozrieme ako vyzerajú predikcie nášho modelu a ako vyzerajú v porovnaní so skutočnými hodnotami. Ako sme povedali na začiatku budeme predikovať 33 mesiacov od januára 2021 po september 2023.
+
+Zobrazme si najskôr naše predikcie:
+
+
+```{r Pred1, include=FALSE}
+pred = sarima.for(data_train$interestRate, n.ahead = 33, 0, 1, 1, no.constant=FALSE, plot.all= TRUE)
+```
+```{r Pred2, echo=FALSE, results='hide', fig.keep='all'}
+fn_plot_train_and_pred(data_train, data_predict, pred, FALSE, 0, 272)
+```
+
+Vidíme, že náš model vzal do úvahy klesajúci trend našich dát a preto sú aj predikcie klesajúce. 
+
+Skúsme teraz do tohto grafu pridať reálne hodnoty úrokovej miery v danom období:
+
+```{r Pred3, echo=FALSE, results='hide', fig.keep='all'}
+fn_plot_train_and_pred(data_train, data_predict, pred, TRUE, 0, 272)
+```
+
+Vidíme, že naše predikcie sa výrazne líšia od reality, skúsme si priblížiť graf tak aby sme videli iba predikcie:
+
+```{r Pred4, echo=FALSE, results='hide', fig.keep='all'}
+fn_plot_pred(data_predict, pred)
+```
+
+Tu vidíme, že naše predikcie sú pomerne dobré prvý rok (všetky sa zmestili do intervalu spoľahlivosti dvoch odchýliek a väčšina sa drží v intervalu spoľahlivosti jednej odchylky) ale od januára 2022 začíne úroková miera výrazne a dlhodobo rásť čo je jav ktorý sa v našich dátach z minulosti neobjavil takže ho náš model nebol schoplný predikovať. Po 15 mesiacoch sa reálne dáta už nezmestia do ani intervalu spoľahlivoti dvoch odchýliek s naďalej rastú a vzďiaľujú od predikcíí aj od intervalov spoľahlivosti. Celkovo to vyzerá, že náš model podhodnocuje úrokovú mieru. 
+
+Ako posledné skúsme ešte porovnať realitu náš najlepší model (MA(1)) a náš druhý najlepší model (AR(1)):
+(zelená - realita, červená - MA(1), modrá - AR(1))
+
+```{r Pred5, include=FALSE}
+pred2 = sarima.for(data_train$interestRate, n.ahead = 33, 1, 1, 0, no.constant=FALSE, plot.all= TRUE)
+```
+```{r Pred6, echo=FALSE, results='hide', fig.keep='all'}
+fn_plot_train_and_pred_model_comp(data_train, data_predict, pred, pred2, TRUE, 0, 272)
+```
+
+Na prvý pohľad sa môže javiť, že vidíme iba jeden model (iba modrý AR(1)), avšak realitou je, že obe modely nám dávajú takmer totožné predikcie a preto nie sú ľahko rozlíšiteľné. 
+
+Skúsme sa pozrieť iba na predikcie:
+
+```{r Pred7, echo=FALSE, results='hide', fig.keep='all'}
+fn_plot_pred_model_comp(data_predict, pred, pred2, -4, 4)
+```
+
+Ani v tomto prípade nevidíme rozdiel medzi predikciami, preto si to skúsime ešte trochu priblížiť: 
+
+```{r Pred8, echo=FALSE, results='hide', fig.keep='all'}
+fn_plot_pred_model_comp(data_predict, pred, pred2, -0.5, 0)
+```
+
+Vidíme, že rozdiel medzi predikciami je minimálny, predikcie MA(1) (červený) modelu sú o trochu menšie ale tento rozdiel je zanedbateľný.
+
+Z toho nám vyplíva, že tieto modely sú si viacmenej rovnocenné, keďže ich predikcie sú takmer totžné.
+
+Celkovo obe modely vyzerajú byť celkom dobré ak vezmeme do úvahy, že reálne dáta sa výrazne vymykajú dovtedajšiemu trendu.

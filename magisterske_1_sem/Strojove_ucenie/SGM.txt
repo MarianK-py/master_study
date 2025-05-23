@@ -1,0 +1,35 @@
+"""
+# Define the stochastic gradient descent function
+def stochastic_gradient_descent(X, y):
+ # Initialize the model weights with a small value
+  w0 = 0.1 * np.random.randn(X.shape[1])
+ # Compute the cost function for each iteration
+  def cost(w, X, y):
+    return (np.dot(X @ w, w) - y).mean()
+ 
+ # Initialize the loop counter
+  iter = 0
+ # Loop over the dataset
+  while np.isclose(iter, 100):
+ # Compute the gradient of the cost function with respect to the model weights
+    grad = np.dot(X.T, (y - X @ w) / np.sqrt(np.dot(X.T, X)))
+ 
+ # Update the model parameters using stochastic gradient descent
+    w = w0 - np.dot(X.T, grad) * np.sqrt(iter + 1) / (X.shape[1] - iter - 1)
+ 
+ # Print the updated weights and the cost function value after each iteration
+    print('Iteration {}: W={}, Cost={}'.format(iter, w, cost(w, X, y)))
+ 
+ # Increment the loop counter
+    iter += 1
+# Call the `stochastic_gradient_descent` function with a toy dataset
+#X = np.array([[1, 2], [3, 4], [5, 6]])
+#y = np.array([2, 4, 6])
+
+X = np.array(X)
+y = np.array(y)
+
+sgd = stochastic_gradient_descent(X, y)
+
+print(sqd)
+"""
