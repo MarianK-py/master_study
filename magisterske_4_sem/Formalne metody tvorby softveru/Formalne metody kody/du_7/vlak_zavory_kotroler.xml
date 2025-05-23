@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>clock z;
+
+clock y;
+chan  lower;
+chan  down; 
+chan  raise; 
+chan  up;
+
+clock x;
+chan approach;
+chan in;
+chan out;
+chan exity;
+</declaration>
+	<template>
+		<name x="5" y="5">kontroler</name>
+		<location id="id0" x="-110" y="0">
+			<name x="-120" y="-34">u2</name>
+			<label kind="invariant" x="-120" y="17">z&lt;=1</label>
+		</location>
+		<location id="id1" x="119" y="0">
+			<name x="109" y="-34">u1</name>
+			<label kind="invariant" x="109" y="17">z&lt;=1</label>
+		</location>
+		<location id="id2" x="0" y="0">
+			<name x="-10" y="-34">u0</name>
+		</location>
+		<init ref="id2"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="51" y="17">z==1</label>
+			<label kind="synchronisation" x="42" y="34">lower!</label>
+			<nail x="56" y="22"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="34" y="-51">approach?</label>
+			<label kind="assignment" x="42" y="-34">z=0</label>
+			<nail x="59" y="-17"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-68" y="17">raise!</label>
+			<nail x="-59" y="17"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-68" y="-51">exity?</label>
+			<label kind="assignment" x="-68" y="-34">z=0</label>
+			<nail x="-59" y="-17"/>
+		</transition>
+	</template>
+	<template>
+		<name>listen</name>
+		<location id="id3" x="0" y="0">
+		</location>
+		<init ref="id3"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-34" y="68">up?</label>
+			<nail x="25" y="59"/>
+			<nail x="-51" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-127" y="-51">down?</label>
+			<nail x="-119" y="-17"/>
+			<nail x="-59" y="-51"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="85" y="0">out?</label>
+			<nail x="76" y="0"/>
+			<nail x="76" y="51"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="18" y="-76">in?</label>
+			<nail x="0" y="-59"/>
+			<nail x="85" y="-59"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">zavory</name>
+		<location id="id4" x="127" y="102">
+			<name x="119" y="119">t2</name>
+		</location>
+		<location id="id5" x="0" y="102">
+			<name x="-8" y="119">t3</name>
+			<label kind="invariant" x="-42" y="85">y&lt;=2</label>
+		</location>
+		<location id="id6" x="127" y="0">
+			<name x="117" y="-34">t1</name>
+			<label kind="invariant" x="144" y="-8">y&lt;=1</label>
+		</location>
+		<location id="id7" x="0" y="0">
+			<name x="-10" y="-34">t0</name>
+		</location>
+		<init ref="id7"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id7"/>
+			<label kind="guard" x="0" y="17">y&gt;=1</label>
+			<label kind="synchronisation" x="0" y="34">up!</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="18" y="85">raise?</label>
+			<label kind="assignment" x="18" y="102">y=0</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="127" y="34">down!</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="18" y="-17">lower?</label>
+			<label kind="assignment" x="18" y="0">y=0</label>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">vlak</name>
+		<location id="id8" x="-51" y="42">
+			<name x="-59" y="51">s2</name>
+			<label kind="invariant" x="-34" y="25">x&lt;=5</label>
+		</location>
+		<location id="id9" x="-195" y="42">
+			<name x="-204" y="51">s3</name>
+			<label kind="invariant" x="-238" y="25">x&lt;=5</label>
+		</location>
+		<location id="id10" x="-51" y="-59">
+			<name x="-61" y="-93">s1</name>
+			<label kind="invariant" x="-34" y="-68">x&lt;=5</label>
+		</location>
+		<location id="id11" x="-195" y="-59">
+			<name x="-205" y="-93">s0</name>
+		</location>
+		<init ref="id11"/>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-187" y="-17">exity!</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-161" y="25">out!</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-51" y="-42">x&gt;2</label>
+			<label kind="synchronisation" x="-51" y="-25">in!</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-170" y="-85">approach!</label>
+			<label kind="assignment" x="-161" y="-59">x=0</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Kontroler = kontroler();
+Vlak = vlak();
+Zavora = zavory();
+Listener = listen();
+
+// List one or more processes to be composed into a system.
+system Kontroler, Vlak, Zavora, Listener;</system>
+	<queries>
+	</queries>
+</nta>

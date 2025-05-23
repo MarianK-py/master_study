@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>chan in1;
+chan in2;
+chan in3;
+chan sm01;
+chan sm02;
+chan sm03;
+chan sm11;
+chan sm12;
+chan sm13;
+chan ms0;
+chan ms1;
+
+chan out1;
+chan out2;
+chan out3;
+chan mr01;
+chan mr02;
+chan mr03;
+chan mr11;
+chan mr12;
+chan mr13;
+chan rm0;
+chan rm1;
+</declaration>
+	<template>
+		<name>message_gen</name>
+		<location id="id0" x="0" y="0">
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-75" y="-34">in3!</label>
+			<nail x="-17" y="0"/>
+			<nail x="-93" y="-34"/>
+			<nail x="0" y="-51"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-84" y="21">in2!</label>
+			<nail x="0" y="51"/>
+			<nail x="-102" y="25"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="21" y="-42">in1!</label>
+			<nail x="42" y="-51"/>
+			<nail x="42" y="42"/>
+		</transition>
+	</template>
+	<template>
+		<name>message_read</name>
+		<location id="id1" x="0" y="0">
+		</location>
+		<init ref="id1"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-85" y="-51">out3?</label>
+			<nail x="-93" y="-17"/>
+			<nail x="-8" y="-59"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-93" y="42">out2?</label>
+			<nail x="-8" y="42"/>
+			<nail x="-93" y="34"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="68" y="-8">out1?</label>
+			<nail x="59" y="-42"/>
+			<nail x="59" y="42"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">sender</name>
+		<location id="id2" x="-59" y="42">
+			<name x="-69" y="8">w03</name>
+		</location>
+		<location id="id3" x="-59" y="-42">
+			<name x="-69" y="-76">w02</name>
+		</location>
+		<location id="id4" x="-59" y="-127">
+			<name x="-69" y="-161">w01</name>
+		</location>
+		<location id="id5" x="-187" y="42">
+			<name x="-197" y="8">s03</name>
+		</location>
+		<location id="id6" x="-187" y="-42">
+			<name x="-197" y="-76">s02</name>
+		</location>
+		<location id="id7" x="-187" y="-127">
+			<name x="-197" y="-161">s01</name>
+		</location>
+		<location id="id8" x="-331" y="-42">
+			<name x="-341" y="-76">s0</name>
+		</location>
+		<location id="id9" x="-195" y="238">
+			<name x="-205" y="204">w13</name>
+		</location>
+		<location id="id10" x="-59" y="238">
+			<name x="-69" y="204">s13</name>
+		</location>
+		<location id="id11" x="-195" y="178">
+			<name x="-205" y="144">w12</name>
+		</location>
+		<location id="id12" x="-59" y="170">
+			<name x="-69" y="136">s12</name>
+		</location>
+		<location id="id13" x="-195" y="102">
+			<name x="-205" y="68">w11</name>
+		</location>
+		<location id="id14" x="-59" y="102">
+			<name x="-69" y="68">s11</name>
+		</location>
+		<location id="id15" x="93" y="161">
+			<name x="83" y="127">s1</name>
+		</location>
+		<init ref="id8"/>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-246" y="195">ms1?</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-246" y="144">ms1?</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-246" y="76">ms1?</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-25" y="-76">ms0?</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-17" y="0">ms0?</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-17" y="59">ms0?</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id5"/>
+			<nail x="-119" y="59"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id6"/>
+			<nail x="-127" y="-25"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id7"/>
+			<nail x="-127" y="-110"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-144" y="8">sm03!</label>
+			<nail x="-119" y="25"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-144" y="-76">sm02!</label>
+			<nail x="-127" y="-59"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-144" y="-161">sm01!</label>
+			<nail x="-127" y="-144"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-245" y="-17">in3?</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-245" y="-59">in2?</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-245" y="-101">in1?</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id10"/>
+			<nail x="-127" y="263"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id12"/>
+			<nail x="-127" y="195"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id14"/>
+			<nail x="-127" y="119"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-152" y="204">sm13!</label>
+			<nail x="-127" y="221"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-144" y="136">sm12!</label>
+			<nail x="-127" y="153"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-153" y="59">sm11!</label>
+			<nail x="-136" y="76"/>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="0" y="178">in3?</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="0" y="144">in2?</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="0" y="102">in1?</label>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">receiver</name>
+		<location id="id16" x="212" y="161">
+			<name x="202" y="127">wr1</name>
+		</location>
+		<location id="id17" x="-433" y="-42">
+			<name x="-443" y="-76">wr0</name>
+		</location>
+		<location id="id18" x="-59" y="42">
+			<name x="-69" y="8">ww03</name>
+		</location>
+		<location id="id19" x="-59" y="-42">
+			<name x="-69" y="-76">ww02</name>
+		</location>
+		<location id="id20" x="-59" y="-127">
+			<name x="-69" y="-161">ww01</name>
+		</location>
+		<location id="id21" x="-187" y="42">
+			<name x="-197" y="8">r03</name>
+		</location>
+		<location id="id22" x="-187" y="-42">
+			<name x="-197" y="-76">r02</name>
+		</location>
+		<location id="id23" x="-187" y="-127">
+			<name x="-197" y="-161">r01</name>
+		</location>
+		<location id="id24" x="-331" y="-42">
+			<name x="-331" y="-76">r0</name>
+		</location>
+		<location id="id25" x="-195" y="238">
+			<name x="-205" y="204">ww13</name>
+		</location>
+		<location id="id26" x="-59" y="238">
+			<name x="-69" y="204">r13</name>
+		</location>
+		<location id="id27" x="-195" y="178">
+			<name x="-205" y="144">ww12</name>
+		</location>
+		<location id="id28" x="-59" y="170">
+			<name x="-69" y="136">r12</name>
+		</location>
+		<location id="id29" x="-195" y="102">
+			<name x="-205" y="68">ww11</name>
+		</location>
+		<location id="id30" x="-59" y="102">
+			<name x="-69" y="68">r11</name>
+		</location>
+		<location id="id31" x="93" y="161">
+			<name x="83" y="127">r1</name>
+		</location>
+		<init ref="id24"/>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="128" y="144">rm0!</label>
+			<nail x="110" y="161"/>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="-391" y="-59">rm1!</label>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="85" y="212">mr03?</label>
+			<nail x="110" y="204"/>
+			<nail x="144" y="229"/>
+			<nail x="212" y="178"/>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="144" y="187">mr02?</label>
+			<nail x="127" y="187"/>
+			<nail x="144" y="195"/>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="127" y="102">mr01?</label>
+			<nail x="119" y="110"/>
+			<nail x="144" y="136"/>
+			<nail x="204" y="144"/>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-458" y="17">mr13?</label>
+			<nail x="-348" y="0"/>
+			<nail x="-391" y="17"/>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-391" y="-93">mr12?</label>
+			<nail x="-374" y="-76"/>
+			<nail x="-399" y="-68"/>
+			<nail x="-408" y="-51"/>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-391" y="-136">mr11?</label>
+			<nail x="-348" y="-85"/>
+			<nail x="-374" y="-119"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="-246" y="195">rm1!</label>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="-246" y="144">rm1!</label>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="-246" y="76">rm1!</label>
+		</transition>
+		<transition>
+			<source ref="id20"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-25" y="-76">rm0!</label>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-17" y="0">rm0!</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-17" y="59">rm0!</label>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="-144" y="8">out3!</label>
+			<nail x="-119" y="25"/>
+		</transition>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="-144" y="-76">out2!</label>
+			<nail x="-127" y="-59"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id20"/>
+			<label kind="synchronisation" x="-144" y="-161">out1!</label>
+			<nail x="-127" y="-144"/>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="-246" y="-8">mr03?</label>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id22"/>
+			<label kind="synchronisation" x="-245" y="-59">mr02?</label>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="-245" y="-101">mr01?</label>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id25"/>
+			<label kind="synchronisation" x="-152" y="204">out3!</label>
+			<nail x="-127" y="221"/>
+		</transition>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="-144" y="136">out2!</label>
+			<nail x="-127" y="153"/>
+		</transition>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-153" y="59">out1!</label>
+			<nail x="-136" y="76"/>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id26"/>
+			<label kind="synchronisation" x="0" y="178">mr13?</label>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="0" y="144">mr12?</label>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id30"/>
+			<label kind="synchronisation" x="0" y="102">mr11?</label>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">medium1</name>
+		<location id="id32" x="-612" y="136">
+			<name x="-654" y="110">m112</name>
+		</location>
+		<location id="id33" x="-433" y="229">
+			<name x="-408" y="212">m111</name>
+		</location>
+		<location id="id34" x="-255" y="127">
+			<name x="-265" y="93">m103</name>
+		</location>
+		<location id="id35" x="-272" y="-68">
+			<name x="-282" y="-102">m102</name>
+		</location>
+		<location id="id36" x="-442" y="-153">
+			<name x="-452" y="-187">m101</name>
+		</location>
+		<location id="id37" x="-620" y="-59">
+			<name x="-630" y="-93">m113</name>
+		</location>
+		<location id="id38" x="-442" y="34">
+			<name x="-452" y="0">m1</name>
+		</location>
+		<init ref="id38"/>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id38"/>
+		</transition>
+		<transition>
+			<source ref="id33"/>
+			<target ref="id38"/>
+		</transition>
+		<transition>
+			<source ref="id34"/>
+			<target ref="id38"/>
+		</transition>
+		<transition>
+			<source ref="id35"/>
+			<target ref="id38"/>
+		</transition>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id38"/>
+		</transition>
+		<transition>
+			<source ref="id37"/>
+			<target ref="id38"/>
+		</transition>
+		<transition>
+			<source ref="id37"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-620" y="-8">mr13!</label>
+			<nail x="-569" y="25"/>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-578" y="136">mr12!</label>
+			<nail x="-510" y="127"/>
+		</transition>
+		<transition>
+			<source ref="id33"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-408" y="170">mr11!</label>
+			<nail x="-391" y="127"/>
+		</transition>
+		<transition>
+			<source ref="id34"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-297" y="59">mr03!</label>
+			<nail x="-324" y="43"/>
+		</transition>
+		<transition>
+			<source ref="id35"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-364" y="-80">mr02!</label>
+			<nail x="-382" y="-59"/>
+		</transition>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-501" y="-119">mr01!</label>
+			<nail x="-476" y="-59"/>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id32"/>
+			<label kind="synchronisation" x="-629" y="51">sm12?</label>
+			<nail x="-569" y="34"/>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id33"/>
+			<label kind="synchronisation" x="-518" y="170">sm11?</label>
+			<nail x="-501" y="136"/>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id34"/>
+			<label kind="synchronisation" x="-348" y="127">sm03?</label>
+			<nail x="-382" y="127"/>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id35"/>
+			<label kind="synchronisation" x="-297" y="-25">sm02?</label>
+			<nail x="-331" y="34"/>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id36"/>
+			<label kind="synchronisation" x="-408" y="-119">sm01?</label>
+			<nail x="-391" y="-68"/>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id37"/>
+			<label kind="synchronisation" x="-578" y="-76">sm13?</label>
+			<nail x="-501" y="-59"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">medium2</name>
+		<location id="id39" x="-442" y="204">
+			<name x="-417" y="187">m21</name>
+		</location>
+		<location id="id40" x="-442" y="-127">
+			<name x="-452" y="-161">m20</name>
+		</location>
+		<location id="id41" x="-442" y="34">
+			<name x="-452" y="0">m2</name>
+		</location>
+		<init ref="id41"/>
+		<transition>
+			<source ref="id39"/>
+			<target ref="id41"/>
+		</transition>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id41"/>
+		</transition>
+		<transition>
+			<source ref="id39"/>
+			<target ref="id41"/>
+			<label kind="synchronisation" x="-365" y="102">ms1!</label>
+			<nail x="-374" y="119"/>
+		</transition>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id41"/>
+			<label kind="synchronisation" x="-535" y="-76">ms0!</label>
+			<nail x="-501" y="-59"/>
+		</transition>
+		<transition>
+			<source ref="id41"/>
+			<target ref="id39"/>
+			<label kind="synchronisation" x="-552" y="102">rm1?</label>
+			<nail x="-510" y="119"/>
+		</transition>
+		<transition>
+			<source ref="id41"/>
+			<target ref="id40"/>
+			<label kind="synchronisation" x="-374" y="-76">rm0?</label>
+			<nail x="-382" y="-59"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+s = sender();
+m1 = medium1();
+m2 = medium2();
+r = receiver();
+
+mg = message_gen();
+mr = message_read();
+
+
+// List one or more processes to be composed into a system.
+system s, m1, m2, r, mg, mr;
+    </system>
+	<queries>
+	</queries>
+</nta>

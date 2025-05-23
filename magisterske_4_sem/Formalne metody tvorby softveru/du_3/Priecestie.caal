@@ -1,0 +1,1 @@
+{"id":null,"title":"Priecestie","ccs":"Cesta = auto.hore.'akrizuje.'dole.Cesta;\n\nZeleznica = vlak.zelena.'vkrizuje.'cervena.Zeleznica;\n\nSignaly = 'zelena.cervena.Signaly + 'hore.dole.Signaly;\n\nPriecestie = (Cesta | Zeleznica | Signaly)\\{hore, dole, zelena, cervena};\n\n","properties":[],"inputMode":"CCS"}

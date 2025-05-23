@@ -1,0 +1,102 @@
+% !TeX spellcheck = sk_SK-Slovak
+\documentclass[a4paper]{article}
+\usepackage[slovak]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage[small,bf]{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{fancyvrb}
+\usepackage{listings}
+%\usepackage{lstautogobble}
+\usepackage{stmaryrd}
+
+\lstset{basicstyle=\ttfamily,
+	mathescape=true,
+	escapeinside=||%,
+	%autogobble
+}
+
+
+\fvset{tabsize=4}
+
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+\newenvironment{modenumerate}
+{\enumerate\setupmodenumerate}
+{\endenumerate}
+
+\newif\ifmoditem
+\newcommand{\setupmodenumerate}{%
+	\global\moditemfalse
+	\let\origmakelabel\makelabel
+	\def\moditem##1{\global\moditemtrue\def\mesymbol{##1}\item}%
+	\def\makelabel##1{%
+		\origmakelabel{##1\ifmoditem\rlap{\mesymbol}\fi\enspace}%
+		\global\moditemfalse}%
+}
+
+\makeatletter
+\def\@seccntformat#1{%
+	\expandafter\ifx\csname c@#1\endcsname\c@section\else
+	\csname the#1\endcsname\quad
+	\fi}
+\makeatother
+
+
+
+\begin{document} 
+	
+\pagenumbering{arabic}
+\pagestyle{plain}
+
+\begin{center}
+	\sc\large
+	Formálne metódy tvorby softvéru\\
+	Domáca úloha 3
+\end{center}
+
+Autor: Marián Kravec
+
+\section{1.)}
+
+\begin{enumerate}[a)]
+	\item Nil a $\tau$.$\tau$.Nil  ->  Áno
+	\item $\tau$.a.Nil + $\tau$.b.Nil a a.Nil + b.Nil  -> Nie
+	\item µX.$\tau$.X a µX.($\tau$.X + $\tau$.Nil) -> Áno
+	\item µX.$\tau$.X a Nil  -> Áno
+\end{enumerate}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{bisim.png}
+	\caption{Výsledky bisimulácii}
+\end{figure}
+
+\section{2.)}
+Po boji... Funkčný kód, sender posiela správy kým nedostane potvrdenie a mediumy ich vedia zahadzovať, kontrola slabej bisimulácia vyšla správne. Receiver vždy vráti potvrdenie ale output iba ak potvrdenie korešponduje s jeho vnútorným stavom. (obrázky na ďalšej strane)
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{protokol.png}
+	\caption{Finálny výsledok}
+\end{figure}
+
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1\textwidth]{bisim2.png}
+	\caption{Výsledky bisimulácii}
+\end{figure}
+
+\end{document}

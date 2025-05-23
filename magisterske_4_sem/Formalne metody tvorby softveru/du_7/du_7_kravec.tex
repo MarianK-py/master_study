@@ -1,0 +1,95 @@
+% !TeX spellcheck = sk_SK-Slovak
+\documentclass[a4paper]{article}
+\usepackage[slovak]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage[small,bf]{caption}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage{fancyvrb}
+\usepackage{listings}
+%\usepackage{lstautogobble}
+\usepackage{stmaryrd}
+
+\lstset{basicstyle=\ttfamily,
+	mathescape=true,
+	escapeinside=||%,
+	%autogobble
+}
+
+
+\fvset{tabsize=4}
+
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+
+\newenvironment{modenumerate}
+{\enumerate\setupmodenumerate}
+{\endenumerate}
+
+\newif\ifmoditem
+\newcommand{\setupmodenumerate}{%
+	\global\moditemfalse
+	\let\origmakelabel\makelabel
+	\def\moditem##1{\global\moditemtrue\def\mesymbol{##1}\item}%
+	\def\makelabel##1{%
+		\origmakelabel{##1\ifmoditem\rlap{\mesymbol}\fi\enspace}%
+		\global\moditemfalse}%
+}
+
+\makeatletter
+\def\@seccntformat#1{%
+	\expandafter\ifx\csname c@#1\endcsname\c@section\else
+	\csname the#1\endcsname\quad
+	\fi}
+\makeatother
+
+\begin{document} 
+	
+\pagenumbering{arabic}
+\pagestyle{plain}
+
+\begin{center}
+	\sc\large
+	Formálne metódy tvorby softvéru\\
+	Domáca úloha 7
+\end{center}
+
+Autor: Marián Kravec
+
+
+\section{2.)}
+
+V prípade vlakového priecestia môžeme skúmať, či nastane deadlock alebo napríklad to či keď vlak práve odišiel (out) ale ešte to neoznámil kontroleru (exit) čiže je v stave s3 tak či sú závory spustené, čiže t2
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1.1\textwidth]{priecestie_query.png}
+	\caption{Queries pre automat priecestia}
+\end{figure}
+
+V oboch prípadoch vidíme, zelenú bodky čiže ich automat spĺňa.
+
+\section{3.)}
+
+Pri ABP môžeme skúmať napríklad, jednoduchú vec ko napríklad či existuje vetva kde dosiahne do bodu r13 čiže kedy odosiela správu číslo 3 a má bit nastavený na 1, na to aby toto dosiahol musí predtým odoslať správu s bitom 0. Ďalšie query ktoré mu môžeme dať je že pre všetky vetvy vždy ak platí s01 (poslaná správa 1) tak to implikuje, že receiver nebude ani v stave r02 and v stave r03 (prijatie správ 2 alebo 3). 
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[width=1.1\textwidth]{ABP_query.png}
+	\caption{Queries pre Alternating bit protocol bez časových
+		obmedzení}
+\end{figure}
+
+Znovu vidíme, že v oboch prípadoch zelenú bodky čiže ich automat spĺňa.
+
+\end{document}

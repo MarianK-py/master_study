@@ -1,0 +1,24 @@
+# Private files
+Potvrdenia_atd/
+
+# Contains only project - GDPR data and too big
+magisterske_4_sem/ModerneTechStrojUc/
+
+# Usual Fashion MNIST dataset
+magisterske_2_sem/Neuronove_siete/cvicenia/cv_10/data/FashionMNIST/
+
+# Usual Fashion MNIST dataset and CIFARS
+magisterske_2_sem/Neuronove_siete/cvicenia/cv_11/data/FashionMNIST/
+magisterske_2_sem/Neuronove_siete/cvicenia/cv_11/data/cifar-10-batches-py/
+magisterske_2_sem/Neuronove_siete/cvicenia/cv_11/data/cifar-10-python.tar.gz
+
+# Sorry... too big projects (because of Angular and NodeJS)
+magisterske_1_sem/Vyvoj_velkych_sofrverovych_applikacii/anguler_test_project
+magisterske_1_sem/Vyvoj_velkych_sofrverovych_applikacii/VVSA
+magisterske_1_sem/Vyvoj_velkych_sofrverovych_applikacii/VVSA_dev_ops
+
+# Too big dataset
+magisterske_1_sem/Strojove_ucenie/a7/data
+
+magisterske_1_sem/
+magisterske_2_sem/

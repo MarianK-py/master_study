@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
+<net id="ClientsAndServers-PT-N0500P0" type="http://www.pnml.org/version-2009/grammar/ptnet">
+<page id="page0">
+<name>
+<text>DefaultPage</text></name><place id="Protocol_Sender_A">
+<graphics><position x="105" y="42"/></graphics>
+<name><text>Protocol_Sender_A</text></name>
+<initialMarking><text>1</text></initialMarking>
+</place>
+<place id="Protocol_Receiver_A">
+<graphics><position x="420" y="546"/></graphics>
+<name><text>Protocol_Receiver_A</text></name>
+<initialMarking><text>1</text></initialMarking>
+</place>
+<place id="Protocol_Medium_B">
+<graphics><position x="273" y="252"/></graphics>
+<name><text>Protocol_Medium_B</text></name>
+</place>
+<place id="Protocol_Sender_B">
+<graphics><position x="105" y="168"/></graphics>
+<name><text>Protocol_Sender_B</text></name>
+</place>
+<place id="Protocol_Medium_A">
+<graphics><position x="273" y="105"/></graphics>
+<name><text>Protocol_Medium_A</text></name>
+</place>
+<place id="Protocol_Sender_D">
+<graphics><position x="105" y="441"/></graphics>
+<name><text>Protocol_Sender_D</text></name>
+</place>
+<place id="Protocol_Medium_C">
+<graphics><position x="273" y="378"/></graphics>
+<name><text>Protocol_Medium_C</text></name>
+</place>
+<place id="Protocol_Medium_D">
+<graphics><position x="273" y="504"/></graphics>
+<name><text>Protocol_Medium_D</text></name>
+</place>
+<place id="Protocol_Receiver_C">
+<graphics><position x="420" y="315"/></graphics>
+<name><text>Protocol_Receiver_C</text></name>
+</place>
+<transition id="Protocol_Send_0">
+<name><text>Protocol_Send_0</text></name>
+<graphics><position x="105" y="105"/></graphics>
+</transition>
+<transition id="Protocol_Receive_old_1">
+<name><text>Protocol_Receive_old_1</text></name>
+<graphics><position x="336" y="420"/></graphics>
+</transition>
+<transition id="Protocol_Receive_0">
+<name><text>Protocol_Receive_0</text></name>
+<graphics><position x="420" y="105"/></graphics>
+</transition>
+<transition id="Protocol_Ack_rec_0">
+<name><text>Protocol_Ack_rec_0</text></name>
+<graphics><position x="105" y="252"/></graphics>
+</transition>
+<transition id="Protocol_ReSend_0">
+<name><text>Protocol_ReSend_0</text></name>
+<graphics><position x="168" y="168"/></graphics>
+</transition>
+<transition id="Protocol_Receive_old_0">
+<name><text>Protocol_Receive_old_0</text></name>
+<graphics><position x="336" y="168"/></graphics>
+</transition>
+<transition id="Protocol_Loss_A">
+<name><text>Protocol_Loss_A</text></name>
+<graphics><position x="273" y="168"/></graphics>
+</transition>
+<transition id="Protocol_ReSend_1">
+<name><text>Protocol_ReSend_1</text></name>
+<graphics><position x="168" y="441"/></graphics>
+</transition>
+<transition id="Protocol_Ack_rec_1">
+<name><text>Protocol_Ack_rec_1</text></name>
+<graphics><position x="105" y="504"/></graphics>
+</transition>
+<transition id="Protocol_Receive_1">
+<name><text>Protocol_Receive_1</text></name>
+<graphics><position x="420" y="378"/></graphics>
+</transition>
+<arc id="0" source="Protocol_Sender_A" target="Protocol_Send_0" type="normal">
+</arc>
+<arc id="1" source="Protocol_Send_0" target="Protocol_Sender_B">
+</arc>
+<arc id="2" source="Protocol_Send_0" target="Protocol_Medium_A">
+</arc>
+<arc id="3" source="Protocol_Receiver_A" target="Protocol_Receive_old_1" type="normal">
+</arc>
+<arc id="4" source="Protocol_Medium_C" target="Protocol_Receive_old_1" type="normal">
+</arc>
+<arc id="5" source="Protocol_Receive_old_1" target="Protocol_Receiver_A">
+</arc>
+<arc id="6" source="Protocol_Receive_old_1" target="Protocol_Medium_D">
+</arc>
+<arc id="7" source="Protocol_Receiver_A" target="Protocol_Receive_0" type="normal">
+</arc>
+<arc id="8" source="Protocol_Medium_A" target="Protocol_Receive_0" type="normal">
+</arc>
+<arc id="9" source="Protocol_Receive_0" target="Protocol_Medium_B">
+</arc>
+<arc id="10" source="Protocol_Receive_0" target="Protocol_Receiver_C">
+</arc>
+<arc id="11" source="Protocol_Medium_B" target="Protocol_Ack_rec_0" type="normal">
+</arc>
+<arc id="12" source="Protocol_Sender_B" target="Protocol_Ack_rec_0" type="normal">
+</arc>
+<arc id="13" source="Protocol_Ack_rec_0" target="Protocol_Sender_D">
+</arc>
+<arc id="14" source="Protocol_Ack_rec_0" target="Protocol_Medium_C">
+</arc>
+<arc id="15" source="Protocol_Sender_B" target="Protocol_ReSend_0" type="normal">
+</arc>
+<arc id="16" source="Protocol_ReSend_0" target="Protocol_Sender_B">
+</arc>
+<arc id="17" source="Protocol_ReSend_0" target="Protocol_Medium_A">
+</arc>
+<arc id="18" source="Protocol_Medium_A" target="Protocol_Receive_old_0" type="normal">
+</arc>
+<arc id="19" source="Protocol_Receiver_C" target="Protocol_Receive_old_0" type="normal">
+</arc>
+<arc id="20" source="Protocol_Receive_old_0" target="Protocol_Medium_B">
+</arc>
+<arc id="21" source="Protocol_Receive_old_0" target="Protocol_Receiver_C">
+</arc>
+<arc id="22" source="Protocol_Medium_A" target="Protocol_Loss_A" type="normal">
+</arc>
+<arc id="23" source="Protocol_Sender_D" target="Protocol_ReSend_1" type="normal">
+</arc>
+<arc id="24" source="Protocol_ReSend_1" target="Protocol_Sender_D">
+</arc>
+<arc id="25" source="Protocol_ReSend_1" target="Protocol_Medium_C">
+</arc>
+<arc id="26" source="Protocol_Sender_D" target="Protocol_Ack_rec_1" type="normal">
+</arc>
+<arc id="27" source="Protocol_Medium_D" target="Protocol_Ack_rec_1" type="normal">
+</arc>
+<arc id="28" source="Protocol_Ack_rec_1" target="Protocol_Sender_A">
+</arc>
+<arc id="29" source="Protocol_Medium_C" target="Protocol_Receive_1" type="normal">
+</arc>
+<arc id="30" source="Protocol_Receiver_C" target="Protocol_Receive_1" type="normal">
+</arc>
+<arc id="31" source="Protocol_Receive_1" target="Protocol_Receiver_A">
+</arc>
+<arc id="32" source="Protocol_Receive_1" target="Protocol_Medium_D">
+</arc>
+</page></net>
+</pnml>

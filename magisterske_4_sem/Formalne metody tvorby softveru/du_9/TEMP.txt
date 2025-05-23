@@ -1,0 +1,49 @@
+ProtokolLose = (SenderL | Medium3 | Medium4 | ReceiverL)\{sm01, sm11, sm02, sm12, sm03, sm13, mr01, mr11, mr02, mr12, mr03, mr13, rm0, rm1, ms0, ms1};
+
+Medium3 = (1.sm01.(1.'mr01.Medium3 + Medium3NL)) + (1.sm11.(1.'mr11.Medium3 + Medium3NL)) +
+(1.sm02.(1.'mr02.Medium3 + Medium3NL)) + (1.sm12.(1.'mr12.Medium3 + Medium3NL)) +
+(1.sm03.(1.'mr03.Medium3 + Medium3NL)) + (1.sm13.(1.'mr13.Medium3 + Medium3NL));
+
+Medium3NL = (1.sm01.(1.'mr01.Medium3)) + (1.sm11.(1.'mr11.Medium3)) +
+(1.sm02.(1.'mr02.Medium3)) + (1.sm12.(1.'mr12.Medium3)) +
+(1.sm03.(1.'mr03.Medium3)) + (1.sm13.(1.'mr13.Medium3));
+
+Medium4 = (1.rm0.(1.'ms0.Medium4 + Medium4NL)) + (1.rm1.(1.'ms1.Medium4 + Medium4NL));
+Medium4NL = (1.rm0.(1.'ms0.Medium4)) + (1.rm1.(1.'ms1.Medium4));
+SenderL = SenderL0;
+
+SenderL0 = 1.in1.SenderRepL01 + 1.in2.SenderRepL02 + 1.in3.SenderRepL03;
+
+SenderL1 = 1.in1.SenderRepL11 + 1.in2.SenderRepL12 + 1.in3.SenderRepL13;
+
+SenderRepL01 = 1.'sm01.4.(ms0.SenderL1 + SenderRepL01);
+SenderRepL02 = 1.'sm02.4.(ms0.SenderL1 + SenderRepL02);
+SenderRepL03 = 1.'sm03.4.(ms0.SenderL1 + SenderRepL03);
+SenderRepL11 = 1.'sm11.4.(ms1.SenderL0 + SenderRepL11);
+SenderRepL12 = 1.'sm12.4.(ms1.SenderL0 + SenderRepL12);
+SenderRepL13 = 1.'sm13.4.(ms1.SenderL0 + SenderRepL13);
+
+ReceiverL = ReceiverL0;
+
+ReceiverL0 = 1.mr01.1.'out1.1.'rm0.ReceiverL1 + 1.mr02.1.'out2.1.'rm0.ReceiverL1 + 1.mr03.1.'out3.1.'rm0.ReceiverL1 + 
+1.mr11.1.'rm1.ReceiverL0 + 1.mr12.1.'rm1.ReceiverL0 + 1.mr13.1.'rm1.ReceiverL0;
+
+ReceiverL1 = 1.mr11.1.'out1.1.'rm1.ReceiverL0 + 1.mr12.1.'out2.1.'rm1.ReceiverL0 + 1.mr13.1.'out3.1.'rm1.ReceiverL0 + 
+1.mr01.1.'rm0.ReceiverL1 + 1.mr02.1.'rm0.ReceiverL1 + 1.mr03.1.'rm0.ReceiverL1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
